@@ -460,3 +460,86 @@ window.addEventListener('resize', () => {
 </body>
 </html>
 ```
+const lessonPuzzles = {
+    0: {
+        correctMove: "e5d6",
+        success: "Correct! You found the en passant capture.",
+        fail: "Try again. Look for the special en passant rule."
+    },
+
+    1: {
+        correctMove: "e4e5",
+        success: "Excellent! Advancing into the center gains space.",
+        fail: "Look for a move that increases central control."
+    },
+
+    2: {
+        correctMove: "d5c7",
+        success: "Great! The knight fork attacks multiple targets.",
+        fail: "Search for a tactical fork with the knight."
+    },
+
+    3: {
+        correctMove: "f2f8",
+        success: "Checkmate! The rooks coordinate perfectly.",
+        fail: "Look for a forcing mating move."
+    }
+};const board = Chessboard('board', {
+    position: lessons[0].fen,
+    draggable: true,
+    dropOffBoard: 'snapback',
+
+    onDrop: function(source, target) {
+
+        const puzzle = lessonPuzzles[currentLesson];
+        const attemptedMove = source + target;
+
+        if (puzzle) {
+
+            if (attemptedMove === puzzle.correctMove) {
+
+                const move = game.move({
+                    from: source,
+                    to: target,
+                    promotion: 'q'
+                });
+
+                if (move === null) {
+                    return 'snapback';
+                }
+
+                setTimeout(() => {
+                    alert(puzzle.success);
+                }, 100);
+
+                return;
+            }
+
+            alert(puzzle.fail);
+            return 'snapback';
+        }
+
+        const move = game.move({
+            from: source,
+            to: target,
+            promotion: 'q'
+        });
+
+        if (move === null) {
+            return 'snapback';
+        }
+    }<div id="feedback"
+     class="hidden mt-4 p-4 rounded-xl text-center font-semibold">
+</div>
+});function showFeedback(message, success) {
+
+    const box = document.getElementById("feedback");
+
+    box.textContent = message;
+
+    box.className =
+        success
+        ? "mt-4 p-4 rounded-xl bg-green-600 text-white text-center font-semibold"
+        : "mt-4 p-4 rounded-xl bg-red-600 text-white text-center font-semibold";
+}showFeedback(puzzle.success, true);
+showFeedback(puzzle.fail, false);
